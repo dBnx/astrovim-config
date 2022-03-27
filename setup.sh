@@ -11,7 +11,7 @@ echo -e "${LRED}Installing astrovim${RESET}"
 git clone https://github.com/kabinspace/AstroVim ~/.config/nvim
 
 echo -e "${LRED}Installing custom config${RESET}"
-git clone https://github.com/dBnx/astrovim-config.git ~/.config/nvim/lua/user
+git clone git@github.com:dBnx/astrovim-config.git ~/.config/nvim/lua/user
 
 echo -e "${LRED}Starting vim & installing plugins${RESET}"
 nvim +PackerSync
