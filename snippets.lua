@@ -51,6 +51,17 @@ ls.snippets = {
       text({"","\\end{itemize}"}),
     })
   },
+  rust = {
+    snip("deref", {
+      text({"impl Deref for "}),
+      ins(1),
+      text({" {", "\ttype Target: "}),
+      ins(2),
+      text({";", "\tfn deref(&self) -> &Self::Target {"}),
+      ins(2),
+      text({"}"}),
+    })
+  },
 }
 
 ls.autosnippets = {
@@ -60,7 +71,7 @@ ls.autosnippets = {
 		}),
 		snip("JK", {
 			text("{"),
-      ins(1), 
+      ins(1),
       text("}"),
       ins(0),
 		}),
