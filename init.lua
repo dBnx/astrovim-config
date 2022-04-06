@@ -53,9 +53,12 @@ local config = {
       },
       {
         "nvim-lua/lsp_extensions.nvim",
-        config = function()
-          vim.cmd [[ autocmd CursorMoved,InsertLeave,BufEnter,TabEnter,BufWritePost *.rs :lua require'lsp_extensions'.inlay_hints{ prefix = '\t» ', highlight = "Comment", aligned = false, enabled = {"TypeHint", "ChainingHint", "ParameterHint"} } ]]
-        end,
+        requires = { "nvim-lspconfig", "nvim-lsp-installer", "nvim-dap", "Comment.nvim" },
+      },
+      {
+        "simrat39/rust-tools.nvim",
+        requires = { "nvim-lspconfig", "nvim-lsp-installer", "nvim-dap", "Comment.nvim" },
+        -- Is configured via the server_registration_override installed below!
       },
       {
         "zegervdv/nrpattern.nvim",
@@ -85,6 +88,10 @@ local config = {
     packer = {
       compile_path = vim.fn.stdpath "config" .. "/lua/packer_compiled.lua",
     },
+    luasnip = {
+      enable_autosnippets = true,
+
+    },
   },
 
   -- Add paths for including more VS Code style snippets in luasnip
@@ -107,9 +114,24 @@ local config = {
     -- end,
 
     -- override the lsp installer server-registration function
-    -- server_registration = function(server, opts)
-    --   server:setup(opts)
-    -- end
+    server_registration = function(server, server_opts)
+      -- Special code for rust.tools.nvim!
+      if server.name == "rust_analyzer" then
+        local extension_path = vim.fn.stdpath "data" .. "/dapinstall/codelldb/extension/"
+        local codelldb_path = extension_path .. "adapter/codelldb"
+        local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
+
+        require("rust-tools").setup {
+          server = server_opts,
+          dap = {
+            adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+          },
+        }
+        vim.cmd [[ autocmd CursorMoved,InsertLeave,BufEnter,TabEnter,BufWritePost *.rs :lua require'lsp_extensions'.inlay_hints{ prefix = '\t» ', highlight = "Comment", aligned = false, enabled = {"TypeHint", "ChainingHint", "ParameterHint"} } ]]
+      else
+        server:setup(server_opts)
+      end
+    end,
 
     -- Add overrides for LSP server settings, the keys are the name of the server
     ["server-settings"] = {
@@ -172,6 +194,8 @@ local config = {
   -- good place to configure mappings and vim options
   polish = function()
     local set = vim.opt
+    local g = vim.g
+    g["tex_flavor"] = "latex"
 
     -- Set options
     set.relativenumber = true
@@ -185,6 +209,7 @@ local config = {
     -- Load custom snippets
     local snippets_ok, snippets_err = pcall(require, "user.snippets")
     if not snippets_ok then
+      print("Error loading custom snippets")
       print("Error loading custom snippets:\n" .. snippets_err)
     end
 
@@ -194,13 +219,13 @@ local config = {
       print("Error loading custom lsp settings")
       print("Error loading custom lsp settings:\n" .. lsp_err)
     end
-     
+
     -- Load custom gui configs
     local gui_ok, gui_err = pcall(require, "user.gui")
     if not gui_ok then
       print("Error loading custom lsp settings:\n" .. gui_err)
     end
-    
+
     -- Set autocommands
     vim.cmd [[
       augroup packer_conf
