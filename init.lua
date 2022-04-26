@@ -5,7 +5,8 @@ local config = {
 
   -- Default theme configuration
   default_theme = {
-    diagnostics_style = "none",
+    diagnostics_style = { italic = true },
+    --diagnostics_style = "none",
     -- Modify the color table
     colors = {
       fg = "#abb2bf",
@@ -22,9 +23,8 @@ local config = {
   -- Disable default plugins
   enabled = {
     bufferline = true,
-    nvim_tree = true,
+    neo_tree = true,
     lualine = true,
-    luasnip = true,
     gitsigns = true,
     colorizer = true,
     toggle_term = true,
@@ -36,6 +36,13 @@ local config = {
     neoscroll = true,
     ts_rainbow = true,
     ts_autotag = true,
+  },
+
+  -- Disable AstroNvim ui features
+  ui = {
+    -- TODO: What are they doing
+    nui_input = true,
+    -- telescope_select = true,
   },
 
   -- Configure plugins
@@ -101,11 +108,33 @@ local config = {
 
   -- Modify which-key registration
   ["which-key"] = {
-    -- Add bindings to the normal mode <leader> mappings
-    register_n_leader = {
-      -- ["N"] = { "<cmd>tabnew<cr>", "New Buffer" },
+    -- Add bindings 
+    register_mappings = {
+      -- first key is the mode, n == normal mode
+      n = {
+        -- second key is the prefix, <leader> prefixes
+        ["<leader>"] = {
+          -- which-key registration table for normal mode, leader prefix
+          -- ["N"] = { "<cmd>tabnew<cr>", "New Buffer"},
+        }
+      }
     },
   },
+
+  -- CMP Source Priorities
+  -- modify here the priorities of default cmp sources
+  -- higher value == higher priority
+  -- The value can also be set to a boolean for disabling default sources:
+  -- false == disabled
+  -- true == 1000
+  cmp = {
+    source_priority = {
+       nvim_lsp = 1000,
+       luasnip = 750,
+       buffer = 500,
+       path = 250,
+      },
+   },
 
   -- Extend LSP configuration
   lsp = {
@@ -184,7 +213,11 @@ local config = {
       -- NOTE: You can remove this on attach function to disable format on save
       on_attach = function(client)
         if client.resolved_capabilities.document_formatting then
-          vim.cmd "autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()"
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            desc = "Auto format before save",
+            pattern = "<buffer>",
+            callback = vim.lsp.buf.formatting_sync,
+          })
         end
       end,
     }
@@ -225,7 +258,7 @@ local config = {
     if not gui_ok then
       print("Error loading custom lsp settings:\n" .. gui_err)
     end
-    
+
     -- Load test code
     local exp_ok, exp_err = pcall(require, "user.experimentation")
     if not exp_ok then
@@ -233,12 +266,14 @@ local config = {
     end
 
     -- Set autocommands
-    vim.cmd [[
-      augroup packer_conf
-        autocmd!
-        autocmd bufwritepost plugins.lua source <afile> | PackerSync
-      augroup end
-    ]]
+    vim.api.nvim_create_augroup("packer_conf", {})
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      desc = "Sync packer after modifying plugins.lua",
+      group = "packer_conf",
+      pattern = "plugins.lua",
+      command = "source <afile> | PackerSync",
+    })
+
     --require'lspconfig'.zeta_note.setup{
     --  cmd = {'/home/dave/.cargo/bin/zeta-note'}
     --}
