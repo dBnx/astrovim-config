@@ -64,7 +64,7 @@ require('lspconfig').texlab.setup{
         rootDirectory = nil,
         build = {
           executable = 'latexmk',
-          args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f', '-outdir=build' },
+          args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f', '-output-directory="build"', '-outdir=build', '-auxdir=build' },
           onSave = true,
           forwardSearchAfter = true,
         },
@@ -74,7 +74,7 @@ require('lspconfig').texlab.setup{
           args = {"--synctex-forward", "%l:1:%f", "%p"},
         },
         chktex = {
-          onOpenAndSave = false,
+          onOpenAndSave = true,
           onEdit = false,
         },
         diagnosticsDelay = 300,
@@ -88,8 +88,16 @@ require('lspconfig').texlab.setup{
       },
     },
   commands = {
+    TexlabClean = {
+      function()
+        -- TODO: Clean aux files
+        buf_build(0)
+      end,
+      description = 'Build the current buffer',
+    },
     TexlabBuild = {
       function()
+        -- TODO: Create build dir ?
         buf_build(0)
       end,
       description = 'Build the current buffer',
@@ -112,7 +120,3 @@ See https://github.com/latex-lsp/texlab/blob/master/docs/options.md for configur
   },
 }
 --vim.cmd [[ autocmd BufWritePost *.tex :TexlabBuild ]]
-
--- Enable inlay hints
---vim.cmd [[ autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost * :lua require'lsp_extensions'.inlay_hints{ prefix = '=>', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} } ]]
-

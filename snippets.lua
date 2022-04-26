@@ -52,6 +52,46 @@ ls.snippets = {
     })
   },
   rust = {
+    -- documentation
+    snip("doctest", {
+      text({"/// ```"}),
+      ins(1),
+      text({"/// ```"}),
+    }),
+    snip("doctestex", {
+      text({"/// # Examples"}),
+      text({"/// "}),
+      text({"/// "}),
+      ins(1),
+      text({"/// "}),
+      text({"/// ```"}),
+      text({"/// "}),
+      ins(2),
+      text({"/// ```"}),
+    }),
+    snip("doctespanic", {
+      text({"/// # Panics"}),
+      text({"/// "}),
+      text({"/// "}),
+      ins(1),
+      text({"/// "}),
+      text({"/// ```"}),
+      text({"/// "}),
+      ins(2),
+      text({"/// ```"}),
+    }),
+    snip("doctesfail", {
+      text({"/// # Failure"}),
+      text({"/// "}),
+      text({"/// "}),
+      ins(1),
+      text({"/// "}),
+      text({"/// ```"}),
+      text({"/// "}),
+      ins(2),
+      text({"/// ```"}),
+    }),
+    -- trait implementations
     snip("deref", {
       text({"impl Deref for "}),
       ins(1),

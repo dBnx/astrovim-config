@@ -24,6 +24,7 @@ local config = {
     bufferline = true,
     nvim_tree = true,
     lualine = true,
+    luasnip = true,
     gitsigns = true,
     colorizer = true,
     toggle_term = true,
@@ -90,7 +91,6 @@ local config = {
     },
     luasnip = {
       enable_autosnippets = true,
-
     },
   },
 
@@ -224,6 +224,12 @@ local config = {
     local gui_ok, gui_err = pcall(require, "user.gui")
     if not gui_ok then
       print("Error loading custom lsp settings:\n" .. gui_err)
+    end
+    
+    -- Load test code
+    local exp_ok, exp_err = pcall(require, "user.experimentation")
+    if not exp_ok then
+      print("Error execution test scripts:\n" .. exp_err)
     end
 
     -- Set autocommands
