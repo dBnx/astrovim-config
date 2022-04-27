@@ -230,6 +230,14 @@ local config = {
     local g = vim.g
     g["tex_flavor"] = "latex"
 
+    -- Wrapping
+    vim.wo.wrap = true
+    local map = vim.keymap.set
+    map("n", "gj", "j")
+    map("n", "gk", "k")
+    map("n", "j", "gj")
+    map("n", "k", "gk")
+
     -- Set options
     set.relativenumber = true
 
