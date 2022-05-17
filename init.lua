@@ -3,10 +3,19 @@ local config = {
   -- Set colorscheme
   colorscheme = "default_theme",
 
+  -- set vim options here (vim.<first_key>.<second_key> =  value)
+  options = {
+    opt = {
+      relativenumber = true, -- sets vim.opt.relativenumber
+    },
+    g = {
+      mapleader = " ", -- sets vim.g.mapleader
+    },
+  },
+
   -- Default theme configuration
   default_theme = {
     diagnostics_style = { italic = true },
-    --diagnostics_style = "none",
     -- Modify the color table
     colors = {
       fg = "#abb2bf",
@@ -18,31 +27,31 @@ local config = {
       highlights.Normal = { fg = C.fg, bg = C.bg }
       return highlights
     end,
-  },
-
-  -- Disable default plugins
-  enabled = {
-    bufferline = true,
-    neo_tree = true,
-    lualine = true,
-    gitsigns = true,
-    colorizer = true,
-    toggle_term = true,
-    comment = true,
-    symbols_outline = true,
-    indent_blankline = true,
-    dashboard = true,
-    which_key = true,
-    neoscroll = true,
-    ts_rainbow = true,
-    ts_autotag = true,
+    plugins = { -- enable or disable extra plugin highlighting
+      aerial = true,
+      beacon = false,
+      bufferline = true,
+      dashboard = true,
+      highlighturl = true,
+      hop = false,
+      indent_blankline = true,
+      lightspeed = false,
+      ["neo-tree"] = true,
+      notify = true,
+      ["nvim-tree"] = false,
+      ["nvim-web-devicons"] = true,
+      rainbow = true,
+      symbols_outline = false, -- check?
+      telescope = true,
+      vimwiki = true,
+      ["which-key"] = true,
+    },
   },
 
   -- Disable AstroNvim ui features
   ui = {
-    -- TODO: What are they doing
     nui_input = true,
-    -- telescope_select = true,
+    telescope_select = true,
   },
 
   -- Configure plugins
@@ -80,30 +89,55 @@ local config = {
           end
         end,
       },
-      -- { "andweeb/presence.nvim" },
-      -- {
-      --   "ray-x/lsp_signature.nvim",
-      --   event = "BufRead",
-      --   config = function()
-      --     require("lsp_signature").setup()
-      --   end,
-      -- },
     },
     -- All other entries override the setup() call for default plugins
     treesitter = {
-      ensure_installed = { "lua" },
+      ensure_installed = { "lua", "latex", "bash", "bibtex", "cpp", "python", "rust", "toml", "verilog", "vim" },
+    },
+    ["nvim-lsp-installer"] = { ensure_installed = { "sumneko_lua", "taplo", "texlab" },
     },
     packer = {
       compile_path = vim.fn.stdpath "config" .. "/lua/packer_compiled.lua",
     },
-    luasnip = {
-      enable_autosnippets = true,
-    },
+    -- Does this work?
+    -- luasnip = {
+    --   enable_autosnippets = true,
+    -- },
+    ["null-ls"] = function(config)
+      local null_ls = require "null-ls"
+      -- Check supported formatters and linters
+      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
+      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
+      config.sources = {
+        -- Set a formatter
+        null_ls.builtins.formatting.rufo,
+        -- Set a linter
+        null_ls.builtins.diagnostics.rubocop,
+      }
+      -- set up null-ls's on_attach function
+      config.on_attach = function(client)
+        -- NOTE: You can remove this on attach function to disable format on save
+        if client.resolved_capabilities.document_formatting then
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            desc = "Auto format before save",
+            pattern = "<buffer>",
+            callback = vim.lsp.buf.formatting_sync,
+          })
+        end
+      end
+      return config -- return final config table
+    end,
   },
 
-  -- Add paths for including more VS Code style snippets in luasnip
+  -- LuaSnip Options
   luasnip = {
+    -- Add paths for including more VS Code style snippets in luasnip
     vscode_snippet_paths = {},
+    enable_autosnippets = true, -- check
+    -- Extend filetypes
+    filetype_extend = {
+      javascript = { "javascriptreact" },
+    },
   },
 
   -- Modify which-key registration
@@ -129,15 +163,20 @@ local config = {
   -- true == 1000
   cmp = {
     source_priority = {
-       nvim_lsp = 1000,
-       luasnip = 750,
-       buffer = 500,
-       path = 250,
-      },
-   },
+      nvim_lsp = 1000,
+      luasnip = 750,
+      buffer = 500,
+      path = 250,
+    },
+  },
 
   -- Extend LSP configuration
+  -- TODO This section
   lsp = {
+    -- enable servers that you already have installed without lsp-installer
+    servers = {
+      -- "pyright"
+    },
     -- add to the server on_attach function
     -- on_attach = function(client, bufnr)
     -- end,
@@ -158,7 +197,7 @@ local config = {
         }
         vim.cmd [[ autocmd CursorMoved,InsertLeave,BufEnter,TabEnter,BufWritePost *.rs :lua require'lsp_extensions'.inlay_hints{ prefix = '\t» ', highlight = "Comment", aligned = false, enabled = {"TypeHint", "ChainingHint", "ParameterHint"} } ]]
       else
-        server:setup(server_opts)
+        --server:setup(server_opts)
       end
     end,
 
@@ -185,44 +224,6 @@ local config = {
     underline = true,
   },
 
-  -- null-ls configuration
-  ["null-ls"] = function()
-    -- Formatting and linting
-    -- https://github.com/jose-elias-alvarez/null-ls.nvim
-    local status_ok, null_ls = pcall(require, "null-ls")
-    if not status_ok then
-      return
-    end
-
-    -- Check supported formatters
-    -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-    local formatting = null_ls.builtins.formatting
-
-    -- Check supported linters
-    -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-    local diagnostics = null_ls.builtins.diagnostics
-
-    null_ls.setup {
-      debug = false,
-      sources = {
-        -- Set a formatter
-        formatting.rufo,
-        -- Set a linter
-        diagnostics.rubocop,
-      },
-      -- NOTE: You can remove this on attach function to disable format on save
-      on_attach = function(client)
-        if client.resolved_capabilities.document_formatting then
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            desc = "Auto format before save",
-            pattern = "<buffer>",
-            callback = vim.lsp.buf.formatting_sync,
-          })
-        end
-      end,
-    }
-  end,
-
   -- This function is run last
   -- good place to configure mappings and vim options
   polish = function()
@@ -238,9 +239,6 @@ local config = {
     map("n", "j", "gj")
     map("n", "k", "gk")
 
-    -- Set options
-    set.relativenumber = true
-
     -- Set key bindings
     local keybindings_ok, keybindings_err = pcall(require, "user.keybindings")
     if not keybindings_ok then
@@ -250,21 +248,19 @@ local config = {
     -- Load custom snippets
     local snippets_ok, snippets_err = pcall(require, "user.snippets")
     if not snippets_ok then
-      print("Error loading custom snippets")
       print("Error loading custom snippets:\n" .. snippets_err)
     end
 
     -- Load custom lsp configs
     local lsp_ok, lsp_err = pcall(require, "user.lsp")
     if not lsp_ok then
-      print("Error loading custom lsp settings")
       print("Error loading custom lsp settings:\n" .. lsp_err)
     end
 
     -- Load custom gui configs
     local gui_ok, gui_err = pcall(require, "user.gui")
     if not gui_ok then
-      print("Error loading custom lsp settings:\n" .. gui_err)
+      print("Error loading custom gui settings:\n" .. gui_err)
     end
 
     -- Load test code
@@ -274,7 +270,7 @@ local config = {
     end
 
     -- Set autocommands
-    vim.api.nvim_create_augroup("packer_conf", {})
+    vim.api.nvim_create_augroup("packer_conf", { clear = true })
     vim.api.nvim_create_autocmd("BufWritePost", {
       desc = "Sync packer after modifying plugins.lua",
       group = "packer_conf",
@@ -282,9 +278,18 @@ local config = {
       command = "source <afile> | PackerSync",
     })
 
-    --require'lspconfig'.zeta_note.setup{
-    --  cmd = {'/home/dave/.cargo/bin/zeta-note'}
-    --}
+    -- Set up custom filetypes
+    -- vim.filetype.add {
+    --   extension = {
+    --     foo = "fooscript",
+    --   },
+    --   filename = {
+    --     ["Foofile"] = "fooscript",
+    --   },
+    --   pattern = {
+    --     ["~/%.config/foo/.*"] = "fooscript",
+    --   },
+    -- }
   end,
 }
 
