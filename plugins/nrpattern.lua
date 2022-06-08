@@ -1,3 +1,4 @@
+
 local patterns = require("nrpattern.default")
 
 patterns[{"yes", "no"}] = { priority = 5 }
