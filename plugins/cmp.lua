@@ -1,8 +1,12 @@
+-- ['<C-Space>'] = cmp.mapping.complete(),
+-- ['<C-e>'] = cmp.mapping.abort(),
 local cmp_ok, cmp = pcall(require, "cmp")
 local luasnip_ok, luasnip = pcall(require, "luasnip")
 if cmp_ok and luasnip_ok then
   return {
     mapping = {
+      ["<C-m>"] = cmp.mapping.scroll_docs(-4),
+      ["<C-n>"] = cmp.mapping.scroll_docs(4),
       ["<CR>"] = cmp.mapping.confirm(),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if luasnip.expandable() then

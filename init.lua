@@ -27,21 +27,62 @@ return {
       print("Error loading custom autocmds:\n" .. autocmds_err)
     end
 
-    local luasnip_avail, luasnip = pcall(require, "luasnip")
+    local luasnip_avail, luasnip = pcall(require, "luasnip") --"luasnip"
+    --print("Status:", luasnip_avail, "\n", luasnip)
     if luasnip_avail then
-      local M = luasnip.config
-      M["enable_autosnippets"] = true
-      M["delete_check_events"] = "TextChanged"
-      luasnip.config.set_config(M)
+      --local M = luasnip.config
+      --M["enable_autosnippets"] = true
+      --M["delete_check_events"] = "TextChanged"
+      --luasnip.config.set_config(M)
       -- TODO: Fix paths!
-      require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+      --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+      --print "YAY Loaded custom snippets"
       --options = {
       --  enable_autosnippets = true,
       --  lua
       --},
       --
+      local ls = luasnip
+      local s = ls.snippet
+      local t = ls.text_node
+      local i = ls.insert_node
+      --local types = require "luasnip.util.types"
+      --local sp = require "luasnip.nodes.snippetProxy"
+      ls.add_snippets("all", {
+        s("aternary", {
+          -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
+          i(1, "cond"),
+          t " ? ",
+          i(2, "then"),
+          t " : ",
+          i(3, "else"),
+        }),
+      }, { type = "autosnippets" })
+      ls.add_snippets("all", {
+        s("ternary", {
+          -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
+          i(1, "cond"),
+          t " ? ",
+          i(2, "then"),
+          t " : ",
+          i(3, "else"),
+        }),
+      })
+      vim.cmd [[command! LuaSnipEdit :lua require("luasnip.loaders").edit_snippet_files()]]
+      --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+      require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+      --ls.loader.from_lua.load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
     end
   end,
+
+  luasnip = {
+    history = true,
+    enable_autosnippets = true,
+    vscode_snippet_paths = {
+      "/home/dave/.config/nvim/lua/user/snippets",
+    },
+    --delete_check_events = "TextChanged,TextChangedI",
+  },
 
   -- Configure AstroNvim updates
   updater = {

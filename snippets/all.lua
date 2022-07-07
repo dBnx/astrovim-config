@@ -1,6 +1,9 @@
 return {
+  parse("JK", "{}"),
+  parse("ctrigall", "also loaded!!"),
+  parse("fthint", "# vim: set ft=sh :"),
   --parse("ctrig", "also loaded!!")
 },
   {
-    --parse("autotrig", "autotriggered, if enabled")
+    parse("autotrigall", "autotriggered, if enabled"),
   }

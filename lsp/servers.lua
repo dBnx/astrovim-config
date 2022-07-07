@@ -15,5 +15,5 @@ return {
   "sqlls", -- Sql
   "taplo", -- toml
   "texlab", -- Latex
+  "wgsl_analyzer",
 }
-

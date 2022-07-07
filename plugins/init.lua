@@ -110,6 +110,13 @@ return {
     config = function() end,
   },
 
+  ["L3MON4D3/LuaSnip"] = {
+    config = function()
+      require("luasnip").config.setup(require "user.plugins.luasnip")
+      --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+    end,
+  },
+
   --["norcalli/nvim-colorizer.lua"] = {
   --  config = function()
   --    require("nvim-colorizer").setup()
