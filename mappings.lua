@@ -5,11 +5,14 @@ return {
     ["<C-s>"] = { ":w!<cr>", desc = "Save File" },
     ["<C-ö>"] = { ":ToggleTerm<CR>", desc = "Toggle Terminal" },
     ["<C-k>"] = { ":TexlabBuild<CR>", desc = "Texlab Build" },
+    ["k"] = { "gk", desc = "Move visual line up" },
+    ["j"] = { "gj", desc = "Move visual line down" },
   },
   -- Insert mode
   i = {
     ["jk"] = { "<Esc>", desc = "Escape insert mode" },
     ["kj"] = { "<Esc>", desc = "Escape insert mode" },
+    ["<C-ö>"] = { ":ToggleTerm<CR>", desc = "Toggle Terminal" },
     ["<C-k>"] = { ":TexlabBuild<CR>", desc = "Texlab Build" },
   },
   -- Command mode
@@ -21,9 +24,10 @@ return {
     -- setting a mapping to false will disable it
     -- ["<esc>"] = false,
   },
-  -- Visual and select mode
   v = {
     -- ["<esc>"] = false,
+    ["k"] = { "gk", desc = "Move visual line up" },
+    ["j"] = { "gj", desc = "Move visual line down" },
   },
   -- Select mode
   s = {
