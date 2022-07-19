@@ -3,17 +3,13 @@ return {
   ["danymat/neogen"] = {
     module = "neogen",
     cmd = "Neogen",
-    config = function()
-      require("neogen").setup(require "user.plugins.neogen")
-    end,
+    config = function() require("neogen").setup(require "user.plugins.neogen") end,
     requires = "nvim-treesitter/nvim-treesitter",
   },
 
   -- Markdown preview
   ["iamcco/markdown-preview.nvim"] = {
-    run = function()
-      vim.fn["mkdp#util#install"](0)
-    end,
+    run = function() vim.fn["mkdp#util#install"](0) end,
     ft = {
       "markdown",
     },
@@ -22,16 +18,12 @@ return {
   -- Reopen files at last edit position
   ["ethanholz/nvim-lastplace"] = {
     event = "BufRead",
-    config = function()
-      require("nvim-lastplace").setup(require "user.plugins.nvim-lastplace")
-    end,
+    config = function() require("nvim-lastplace").setup(require "user.plugins.nvim-lastplace") end,
   },
 
   ["hrsh7th/cmp-emoji"] = {
     after = "nvim-cmp",
-    config = function()
-      astronvim.add_user_cmp_source "emoji"
-    end,
+    config = function() astronvim.add_user_cmp_source "emoji" end,
   },
 
   ["nanotee/sqls.nvim"] = { module = "sqls" },
@@ -39,9 +31,7 @@ return {
   ["benfowler/telescope-luasnip.nvim"] = {
     after = "telescope.nvim",
     module = "telescope._extensions.luasnip",
-    config = function()
-      require("telescope").load_extension "luasnip"
-    end,
+    config = function() require("telescope").load_extension "luasnip" end,
   },
 
   ["klen/nvim-test"] = {
@@ -53,23 +43,17 @@ return {
       "TestVisit",
       "TestEdit",
     },
-    config = function()
-      require("nvim-test").setup(require "user.plugins.nvim-test")
-    end,
+    config = function() require("nvim-test").setup(require "user.plugins.nvim-test") end,
   },
 
   ["akinsho/git-conflict.nvim"] = {
-    config = function()
-      require("git-conflict").setup(require "user.plugins.git-conflict")
-    end,
+    config = function() require("git-conflict").setup(require "user.plugins.git-conflict") end,
   },
 
   ["dstein64/vim-startuptime"] = {},
 
   ["zegervdv/nrpattern.nvim"] = {
-    config = function()
-      require("nrpattern").setup(require "user.plugins.nrpattern")
-    end,
+    config = function() require("nrpattern").setup(require "user.plugins.nrpattern") end,
   },
 
   ["mvllow/modes.nvim"] = {
@@ -83,10 +67,10 @@ return {
 
   { "mfussenegger/nvim-dap" },
   ["neovim/nvim-lspconfig"] = {
-    config = function()
-      require "lspconfig"
-    end,
+    config = function() require "lspconfig" end,
   },
+
+  -- { "nvim-lua/plenary.nvim" },
 
   ["simrat39/rust-tools.nvim"] = {
     requires = { "nvim-lspconfig", "nvim-dap" },
@@ -100,22 +84,20 @@ return {
   },
 
   ["nvim-telescope/telescope-ui-select.nvim"] = {
-    requires = { "telescope" },
-    config = function()
-      require("telescope").load_extension "ui-select"
-    end,
+    requires = "telescope.nvim",
+    config = function() require("telescope").load_extension "ui-select" end,
   },
 
   ["chrisbra/csv.vim"] = {
     config = function() end,
   },
 
-  ["L3MON4D3/LuaSnip"] = {
-    config = function()
-      require("luasnip").config.setup(require "user.plugins.luasnip")
-      --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
-    end,
-  },
+  --["L3MON4D3/LuaSnip"] = {
+  --  config = function()
+  --    require("luasnip").config.setup(require "user.plugins.luasnip")
+  --    --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+  --  end,
+  --},
 
   --["norcalli/nvim-colorizer.lua"] = {
   --  config = function()
