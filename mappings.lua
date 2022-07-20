@@ -19,15 +19,15 @@ return {
   c = {
     -- ["<esc>"] = false,
   },
-  -- Normal mode
+  -- Terminal mode
   t = {
     -- setting a mapping to false will disable it
     -- ["<esc>"] = false,
   },
   v = {
     -- ["<esc>"] = false,
-    ["k"] = { "gk", desc = "Move visual line up" },
-    ["j"] = { "gj", desc = "Move visual line down" },
+    --["k"] = { "", desc = "Move visual line up" },
+    --["j"] = { "", desc = "Move visual line down" },
   },
   -- Select mode
   s = {

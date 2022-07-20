@@ -175,7 +175,7 @@ return {
   server = {
     -- standalone file support
     -- setting it to false may improve startup time
-    standalone = true,
+    standalone = false, -- EDIT
   }, -- rust-analyer options
 
   -- debugging stuff
