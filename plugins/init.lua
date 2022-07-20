@@ -92,6 +92,9 @@ return {
     config = function() end,
   },
 
+  { "elkowar/yuck.vim" },
+
+  { "rhysd/vim-grammarous" },
   --["L3MON4D3/LuaSnip"] = {
   --  config = function()
   --    require("luasnip").config.setup(require "user.plugins.luasnip")

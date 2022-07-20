@@ -18,14 +18,33 @@ return {
     vim.opt.timeoutlen = 180
 
     local keybindings_ok, keybindings_err = pcall(require, "user.mappings")
-    if not keybindings_ok then
-      print("Error loading custom keybindings:\n" .. keybindings_err)
-    end
+    if not keybindings_ok then print("Error loading custom keybindings:\n" .. keybindings_err) end
 
     local autocmds_ok, autocmds_err = pcall(require, "user.autocmds")
-    if not autocmds_ok then
-      print("Error loading custom autocmds:\n" .. autocmds_err)
-    end
+    if not autocmds_ok then print("Error loading custom autocmds:\n" .. autocmds_err) end
+
+    vim.cmd [[
+      let g:grammarous#show_first_error = 0
+      let g:grammarous#hooks = {}
+      function! g:grammarous#hooks.on_check(errs) abort
+          nmap <buffer><C-n> <Plug>(grammarous-move-to-next-error)
+          nmap <buffer><C-p> <Plug>(grammarous-move-to-previous-error)
+      endfunction
+
+      function! g:grammarous#hooks.on_reset(errs) abort
+          nunmap <buffer><C-n>
+          nunmap <buffer><C-p>
+      endfunction
+      let g:grammarous#default_comments_only_filetypes = {
+            \ '*' : 1, 'help' : 0, 'markdown' : 0, 'tex' : 0,
+            \ }
+    ]]
+    --vim.cmd [[
+    --  let g:languagetool_server_jar='$HOME/.local/share/languagetool/languagetool-server.jar'
+    --  autocmd Filetype tex LanguageToolSetUp
+    --  hi LanguageToolGrammarError  guisp=blue gui=undercurl guifg=NONE guibg=NONE ctermfg=white ctermbg=blue term=underline cterm=none
+    --  hi LanguageToolSpellingError guisp=red  gui=undercurl guifg=NONE guibg=NONE ctermfg=white ctermbg=red  term=underline cterm=none
+    --]]
 
     local luasnip_avail, luasnip = pcall(require, "luasnip") --"luasnip"
     --print("Status:", luasnip_avail, "\n", luasnip)
