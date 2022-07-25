@@ -15,6 +15,7 @@ if status_ok then
         filetypes = { "javascript", "typescript", "css", "scss", "html", "yaml", "markdown", "json" },
       },
       -- Linters
+      builtins.diagnostics.vale, -- General writing
       builtins.diagnostics.rubocop, -- Ruby
       builtins.diagnostics.tsc, -- Typescript
       builtins.diagnostics.shellcheck.with {

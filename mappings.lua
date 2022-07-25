@@ -7,6 +7,7 @@ return {
     ["<C-k>"] = { ":TexlabBuild<CR>", desc = "Texlab Build" },
     ["k"] = { "gk", desc = "Move visual line up" },
     ["j"] = { "gj", desc = "Move visual line down" },
+    ["<c-t>"] = { ":TroubleToggle<CR>", desc = "Toggle trouble" },
   },
   -- Insert mode
   i = {
@@ -14,6 +15,7 @@ return {
     ["kj"] = { "<Esc>", desc = "Escape insert mode" },
     ["<C-ö>"] = { ":ToggleTerm<CR>", desc = "Toggle Terminal" },
     ["<C-k>"] = { ":TexlabBuild<CR>", desc = "Texlab Build" },
+    ["<c-t>"] = { ":TroubleToggle<CR>", desc = "Toggle trouble" },
   },
   -- Command mode
   c = {
