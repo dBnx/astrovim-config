@@ -23,9 +23,7 @@ local function buf_build(bufnr)
   }
   if texlab_client then
     texlab_client.request("textDocument/build", params, function(err, result)
-      if err then
-        error(tostring(err))
-      end
+      if err then error(tostring(err)) end
       print("Build " .. texlab_build_status[result.status])
     end, bufnr)
   else
@@ -42,9 +40,7 @@ local function buf_search(bufnr)
   }
   if texlab_client then
     texlab_client.request("textDocument/forwardSearch", params, function(err, result)
-      if err then
-        error(tostring(err))
-      end
+      if err then error(tostring(err)) end
       print("Search " .. texlab_forward_status[result.status])
     end, bufnr)
   else
@@ -55,20 +51,13 @@ end
 return {
   cmd = { "texlab" },
   filetypes = { "tex", "bib" },
-  root_dir = function(fname)
-    return util.root_pattern ".latexmkrc"(fname) or util.find_git_ancestor(fname)
-  end,
+  root_dir = function(fname) return util.root_pattern ".latexmkrc"(fname) or util.find_git_ancestor(fname) end,
   single_file_support = true,
   -- LSP Settings =================================================================================
   settings = {
     texlab = {
       rootDirectory = nil,
       -- Build -----------------------------------------------------------------
-      --
-      --  "texlab.build.executable": "tectonic",
-      --  "texlab.build.args": [
-      --  ]
-
       --build = {
       --  executable = "tectonic",
       --  args = {
@@ -136,9 +125,7 @@ return {
       description = "Build the current buffer",
     },
     TexlabForward = {
-      function()
-        buf_search(0)
-      end,
+      function() buf_search(0) end,
       description = "Forward search from current position",
     },
   },

@@ -78,7 +78,7 @@ return {
       --require("nvim-lspconfig").rust_analyzer.setup {}
       require("rust-tools").setup(require "user.plugins.rust_tools")
       -- set inlay hints
-      require("rust-tools.inlay_hints").set_inlay_hints()
+      --require("rust-tools.inlay_hints").set_inlay_hints()
     end,
     -- Is configured via the server_registration_override installed below!
   },
@@ -116,4 +116,16 @@ return {
   --    require("nvim-colorizer").setup()
   --  end,
   --},
+  --
+  -- use mason-lspconfig to configure LSP installations
+  ["williamboman/mason-lspconfig"] = {
+    ensure_installed = { "sumneko_lua" },
+  },
+  -- use mason-tool-installer to configure DAP/Formatters/Linter installation
+  ["williamboman/mason-tool-installer"] = {
+    ensure_installed = { "prettier", "stylua" },
+  },
+  ["williamboman/mason.nvim"] = {
+    ensure_installed = { "prettier", "stylua" },
+  },
 }

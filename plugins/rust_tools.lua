@@ -37,7 +37,8 @@ return {
       -- not that this may cause higher CPU usage.
       -- This option is only respected when only_current_line and
       -- autoSetHints both are true.
-      only_current_line_autocmd = "CursorHold",
+      -- only_current_line_autocmd = "CursorHold",
+      only_current_line_autocmd = "CursorMoved",
 
       -- whether to show parameter hints with the inlay hints or not
       -- default: true
@@ -176,6 +177,22 @@ return {
     -- standalone file support
     -- setting it to false may improve startup time
     standalone = false, -- EDIT
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          allFeatures = true,
+        },
+        checkOnSave = {
+          allFeatures = true,
+          command = "clippy",
+        },
+        procMacro = {
+          ignored = {
+            ["async-trait"] = { "async_trait" },
+          },
+        },
+      },
+    },
   }, -- rust-analyer options
 
   -- debugging stuff

@@ -1,5 +1,6 @@
 return {
-  colorscheme = "duskfox",
+  --colorscheme = "duskfox",
+  colorscheme = "default_theme",
 
   cmp = {
     source_priority = {
@@ -92,6 +93,12 @@ return {
       --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
       require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
       --ls.loader.from_lua.load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        desc = "Sync packer after modifying plugins.lua",
+        group = "packer_conf",
+        pattern = "plugins/init.lua",
+        command = "source <afile> | PackerSync",
+      })
     end
   end,
 
@@ -100,6 +107,10 @@ return {
     enable_autosnippets = true,
     vscode_snippet_paths = {
       "/home/dave/.config/nvim/lua/user/snippets",
+    },
+    -- Extend filetypes
+    filetype_extend = {
+      javascript = { "javascriptreact" },
     },
     --delete_check_events = "TextChanged,TextChangedI",
   },
@@ -119,5 +130,17 @@ return {
     --   ["remote2"] = "github_user/repo", -- GitHub user/repo shortcut,
     --   ["remote3"] = "github_user", -- GitHub user assume AstroNvim fork
     -- },
+  },
+
+  -- Disable AstroNvim ui features
+  ui = {
+    nui_input = true,
+    telescope_select = true,
+  },
+
+  -- Diagnostics configuration (for vim.diagnostics.config({}))
+  diagnostics = {
+    virtual_text = true,
+    underline = true,
   },
 }
