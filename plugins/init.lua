@@ -1,4 +1,35 @@
 return {
+
+  -- LSP Specific Plugins -----------------------------------------------------
+  {
+    "simrat39/rust-tools.nvim",
+    after = "mason-lspconfig.nvim",
+    config = function()
+      require("rust-tools").setup {
+        --server = astronvim.lsp.server_settings "rust_analyzer", -- get the server settings and built in capabilities/on_attach
+        require "user.plugins.rust_tools",
+      }
+      require("rust-tools").inlay_hints.enable()
+    end,
+  },
+  {
+    "saecki/crates.nvim",
+    tag = "v0.2.1",
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function() require("crates").setup() end,
+  },
+
+  {
+    "p00f/clangd_extensions.nvim",
+    after = "mason-lspconfig.nvim",
+    config = function()
+      require("clangd_extensions").setup {
+        server = astronvim.lsp.server_settings "clangd",
+        extensions = require "user.lsp.server-settings.clangd_extensions",
+      }
+    end,
+  },
+
   -- Annotation generator
   ["danymat/neogen"] = {
     module = "neogen",
@@ -66,22 +97,11 @@ return {
   },
 
   { "mfussenegger/nvim-dap" },
-  ["neovim/nvim-lspconfig"] = {
-    config = function() require "lspconfig" end,
-  },
+  --["neovim/nvim-lspconfig"] = {
+  --  config = function() require "lspconfig" end,
+  --},
 
   -- { "nvim-lua/plenary.nvim" },
-
-  ["simrat39/rust-tools.nvim"] = {
-    requires = { "nvim-lspconfig", "nvim-dap" },
-    config = function()
-      --require("nvim-lspconfig").rust_analyzer.setup {}
-      require("rust-tools").setup(require "user.plugins.rust_tools")
-      -- set inlay hints
-      --require("rust-tools.inlay_hints").set_inlay_hints()
-    end,
-    -- Is configured via the server_registration_override installed below!
-  },
 
   ["nvim-telescope/telescope-ui-select.nvim"] = {
     requires = "telescope.nvim",
@@ -118,14 +138,4 @@ return {
   --},
   --
   -- use mason-lspconfig to configure LSP installations
-  ["williamboman/mason-lspconfig"] = {
-    ensure_installed = { "sumneko_lua" },
-  },
-  -- use mason-tool-installer to configure DAP/Formatters/Linter installation
-  ["williamboman/mason-tool-installer"] = {
-    ensure_installed = { "prettier", "stylua" },
-  },
-  ["williamboman/mason.nvim"] = {
-    ensure_installed = { "prettier", "stylua" },
-  },
 }

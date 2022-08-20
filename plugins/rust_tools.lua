@@ -173,27 +173,28 @@ return {
   -- all the opts to send to nvim-lspconfig
   -- these override the defaults set by rust-tools.nvim
   -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-  server = {
-    -- standalone file support
-    -- setting it to false may improve startup time
-    standalone = false, -- EDIT
-    settings = {
-      ["rust-analyzer"] = {
-        cargo = {
-          allFeatures = true,
-        },
-        checkOnSave = {
-          allFeatures = true,
-          command = "clippy",
-        },
-        procMacro = {
-          ignored = {
-            ["async-trait"] = { "async_trait" },
-          },
-        },
-      },
-    },
-  }, -- rust-analyer options
+  server = astronvim.lsp.server_settings "rust_analyzer", -- get the server settings and built in capabilities/on_attach
+  --server = {
+  --  -- standalone file support
+  --  -- setting it to false may improve startup time
+  --  standalone = false, -- EDIT
+  --  settings = {
+  --    ["rust-analyzer"] = {
+  --      cargo = {
+  --        allFeatures = true,
+  --      },
+  --      checkOnSave = {
+  --        allFeatures = true,
+  --        command = "clippy",
+  --      },
+  --      procMacro = {
+  --        ignored = {
+  --          ["async-trait"] = { "async_trait" },
+  --        },
+  --      },
+  --    },
+  --  },
+  --}, -- rust-analyer options
 
   -- debugging stuff
   dap = {
