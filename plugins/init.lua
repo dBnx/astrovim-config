@@ -15,8 +15,16 @@ return {
   {
     "saecki/crates.nvim",
     tag = "v0.2.1",
-    requires = { "nvim-lua/plenary.nvim" },
-    config = function() require("crates").setup() end,
+    event = { "BufRead Cargo.toml" },
+    requires = { { "nvim-lua/plenary.nvim" } },
+    config = function()
+      require("crates").setup {
+        null_ls = {
+          enabled = true,
+          name = "crates.nvim",
+        },
+      }
+    end,
   },
 
   {
@@ -29,6 +37,29 @@ return {
       }
     end,
   },
+
+  -- Debugging
+  --  {
+  --    "puremourning/vimspector",
+  --    config = function()
+  --      vim.cmd [[
+  --let g:vimspector_sidebar_width = 85
+  --let g:vimspector_bottombar_height = 15
+  --let g:vimspector_terminal_maxwidth = 70
+  --]]
+  --      vim.cmd [[
+  --nmap <F9> <cmd>call vimspector#Launch()<cr>
+  --nmap <F5> <cmd>call vimspector#StepOver()<cr>
+  --nmap <F8> <cmd>call vimspector#Reset()<cr>
+  --nmap <F11> <cmd>call vimspector#StepOver()<cr>")
+  --nmap <F12> <cmd>call vimspector#StepOut()<cr>")
+  --nmap <F10> <cmd>call vimspector#StepInto()<cr>")
+  --]]
+  --      map("n", "Db", ":call vimspector#ToggleBreakpoint()<cr>")
+  --      map("n", "Dw", ":call vimspector#AddWatch()<cr>")
+  --      map("n", "De", ":call vimspector#Evaluate()<cr>")
+  --    end,
+  --  },
 
   -- Annotation generator
   ["danymat/neogen"] = {
@@ -96,7 +127,45 @@ return {
     end,
   },
 
-  { "mfussenegger/nvim-dap" },
+  {
+    "mfussenegger/nvim-dap",
+    after = "rust-tools.nvim",
+    config = function()
+      local dap = require "dap"
+      dap.configurations.python = {
+        {
+          type = "python",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          pythonPath = function() return "/usr/bin/python" end,
+        },
+      }
+
+      dap.adapters.codelldb = {
+        type = "server",
+        port = "${port}",
+        executable = {
+          command = "/usr/bin/codelldb",
+          args = { "--port", "${port}" },
+        },
+      }
+      dap.configurations.rust = {
+        {
+          name = "Rust debug",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            vim.fn.jobstart "cargo build"
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
+          end,
+          cwd = "${workspaceFolder}",
+          stopOnEntry = true,
+          showDisassembly = "never",
+        },
+      }
+    end,
+  },
   --["neovim/nvim-lspconfig"] = {
   --  config = function() require "lspconfig" end,
   --},

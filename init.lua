@@ -7,6 +7,7 @@ return {
       nvim_lsp = 1000,
       luasnip = 750,
       vale = 725,
+      crates = 710,
       emoji = 700,
       pandoc_references = 700,
       latex_symbols = 700,
