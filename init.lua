@@ -1,25 +1,10 @@
-return {
-  --colorscheme = "duskfox",
-  colorscheme = "onedark",
+--              AstroNvim Configuration Table
+-- All configuration changes should go inside of the table below
 
-  cmp = {
-    source_priority = {
-      nvim_lsp = 1000,
-      luasnip = 750,
-      vale = 725,
-      crates = 710,
-      emoji = 700,
-      pandoc_references = 700,
-      latex_symbols = 700,
-      calc = 650,
-      path = 500,
-      buffer = 250,
-    },
-  },
-
-  ["mason-lspconfig"] = {
-    ensure_installed = { "rust_analyzer", "clangd" },
-  },
+-- You can think of a Lua "table" as a dictionary like data structure the
+-- normal format is "key = value". These also handle array like data structures
+-- where a value with no key simply has an implicit numeric key
+local config = {
 
   -- Configure AstroNvim updates
   updater = {
@@ -31,6 +16,8 @@ return {
     pin_plugins = nil, -- nil, true, false (nil will pin plugins on stable only)
     skip_prompts = false, -- skip prompts about breaking changes
     show_changelog = true, -- show the changelog after performing an update
+    auto_reload = true, -- automatically reload and sync packer after a successful update
+    auto_quit = false, -- automatically quit the current session after a successful update
     -- remotes = { -- easily add new remotes to track
     --   ["remote_name"] = "https://remote_url.come/repo.git", -- full remote url
     --   ["remote2"] = "github_user/repo", -- GitHub user/repo shortcut,
@@ -38,116 +25,156 @@ return {
     -- },
   },
 
-  -- Disable AstroNvim ui features
-  ui = {
-    nui_input = true,
-    telescope_select = true,
+  -- Set colorscheme to use
+  colorscheme = "default_theme",
+
+  -- Add highlight groups in any theme
+  highlights = {
+    -- init = { -- this table overrides highlights in all themes
+    --   Normal = { bg = "#000000" },
+    -- }
+    -- duskfox = { -- a table of overrides/changes to the duskfox theme
+    --   Normal = { bg = "#000000" },
+    -- },
   },
 
-  -- Diagnostics configuration (for vim.diagnostics.config({}))
+  -- set vim options here (vim.<first_key>.<second_key> =  value)
+  options = {
+    opt = {
+      relativenumber = true,
+      number = true,
+      spell = true,
+      -- spelllang = "en_us,de_at",
+      signcolumn = "yes", -- default: "auto"
+      wrap = false,
+      smartindent = true,
+      smartcase = true,
+    },
+    g = {
+      mapleader = " ", -- sets vim.g.mapleader
+      cmp_enabled = true, -- enable completion at start
+      autopairs_enabled = true, -- enable autopairs at start
+      diagnostics_enabled = true, -- enable diagnostics at start
+      status_diagnostics_enabled = true, -- enable diagnostics in statusline
+    },
+  },
+  -- If you need more control, you can use the function()...end notation
+  -- options = function(local_vim)
+  --   local_vim.opt.relativenumber = true
+  --   local_vim.g.mapleader = " "
+  --   local_vim.opt.whichwrap = vim.opt.whichwrap - { 'b', 's' } -- removing option from list
+  --   local_vim.opt.shortmess = vim.opt.shortmess + { I = true } -- add to option list
+  --
+  --   return local_vim
+  -- end,
+
+  -- Set dashboard header
+  header = require 'user.header',
+
+  -- Default theme configuration
+  default_theme = require 'user.default_theme',
+
+  -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
   diagnostics = {
     virtual_text = true,
     underline = true,
   },
 
+  -- Extend LSP configuration
+  lsp = require 'user.lsp',
+
+  -- Mapping data with "desc" stored directly by vim.keymap.set().
   --
+  -- Please use this mappings table to set keyboard mapping since this is the
+  -- lower level configuration and more robust one. (which-key will
+  -- automatically pick-up stored data by this setting.)
+  mappings = require 'user.mappings',
+
+  -- Configure plugins
+  plugins = require 'user.plugins',
+
+  -- LuaSnip Options
   luasnip = {
-    history = true,
-    enable_autosnippets = true,
-    vscode_snippet_paths = {
-      "/home/dave/.config/nvim/lua/user/snippets",
-    },
+    enable_autosnippets = true, -- CHECK IF IT DOES SMTH
+    -- Add paths for including more VS Code style snippets in luasnip
+    vscode_snippet_paths = {},
     -- Extend filetypes
     filetype_extend = {
-      javascript = { "javascriptreact" },
+      -- javascript = { "javascriptreact" },
     },
-    --delete_check_events = "TextChanged,TextChangedI",
   },
 
-  --
+  -- CMP Source Priorities
+  -- modify here the priorities of default cmp sources
+  -- higher value == higher priority
+  -- The value can also be set to a boolean for disabling default sources:
+  -- false == disabled
+  -- true == 1000
+  cmp = {
+    source_priority = {
+      nvim_lsp = 1000,
+      luasnip = 750,
+      buffer = 500,
+      path = 250,
+    },
+  },
+
+  -- Modify which-key registration (Use this with mappings table in the above.)
+  ["which-key"] = {
+    -- Add bindings which show up as group name
+    register = {
+      -- first key is the mode, n == normal mode
+      n = {
+        -- second key is the prefix, <leader> prefixes
+        ["<leader>"] = {
+          -- third key is the key to bring up next level and its displayed
+          -- group name in which-key top level menu
+          ["b"] = { name = "Buffer" },
+        },
+      },
+    },
+  },
+
+  -- This function is run last and is a good place to configuring
+  -- augroups/autocommands and custom filetypes also this just pure lua so
+  -- anything that doesn't fit in the normal config locations above can go here
   polish = function()
-    vim.opt.timeoutlen = 180
-
-    local keybindings_ok, keybindings_err = pcall(require, "user.mappings")
-    if not keybindings_ok then print("Error loading custom keybindings:\n" .. keybindings_err) end
-
-    local autocmds_ok, autocmds_err = pcall(require, "user.autocmds")
-    if not autocmds_ok then print("Error loading custom autocmds:\n" .. autocmds_err) end
-
     vim.cmd [[
-      let g:grammarous#show_first_error = 0
-      let g:grammarous#hooks = {}
-      function! g:grammarous#hooks.on_check(errs) abort
-          nmap <buffer><C-n> <Plug>(grammarous-move-to-next-error)
-          nmap <buffer><C-p> <Plug>(grammarous-move-to-previous-error)
-      endfunction
-
-      function! g:grammarous#hooks.on_reset(errs) abort
-          nunmap <buffer><C-n>
-          nunmap <buffer><C-p>
-      endfunction
-      let g:grammarous#default_comments_only_filetypes = {
-            \ '*' : 1, 'help' : 0, 'markdown' : 0, 'tex' : 0,
-            \ }
+    command! LuaSnipEdit :lua require("luasnip.loaders").edit_snippet_files()
     ]]
-    --vim.cmd [[
-    --  let g:languagetool_server_jar='$HOME/.local/share/languagetool/languagetool-server.jar'
-    --  autocmd Filetype tex LanguageToolSetUp
-    --  hi LanguageToolGrammarError  guisp=blue gui=undercurl guifg=NONE guibg=NONE ctermfg=white ctermbg=blue term=underline cterm=none
-    --  hi LanguageToolSpellingError guisp=red  gui=undercurl guifg=NONE guibg=NONE ctermfg=white ctermbg=red  term=underline cterm=none
-    --]]
-
-    local luasnip_avail, luasnip = pcall(require, "luasnip") --"luasnip"
-    --print("Status:", luasnip_avail, "\n", luasnip)
-    if luasnip_avail then
-      --local M = luasnip.config
-      --M["enable_autosnippets"] = true
-      --M["delete_check_events"] = "TextChanged"
-      --luasnip.config.set_config(M)
-      -- TODO: Fix paths!
-      --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
-      --print "YAY Loaded custom snippets"
-      --options = {
-      --  enable_autosnippets = true,
-      --  lua
-      --},
-      --
-      local ls = luasnip
-      local s = ls.snippet
-      local t = ls.text_node
-      local i = ls.insert_node
-      --local types = require "luasnip.util.types"
-      --local sp = require "luasnip.nodes.snippetProxy"
-      ls.add_snippets("all", {
-        s("aternary", {
-          -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
-          i(1, "cond"),
-          t " ? ",
-          i(2, "then"),
-          t " : ",
-          i(3, "else"),
-        }),
-      }, { type = "autosnippets" })
-      ls.add_snippets("all", {
-        s("ternary", {
-          -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
-          i(1, "cond"),
-          t " ? ",
-          i(2, "then"),
-          t " : ",
-          i(3, "else"),
-        }),
-      })
-      vim.cmd [[command! LuaSnipEdit :lua require("luasnip.loaders").edit_snippet_files()]]
-      --require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
-      require("luasnip.loaders.from_lua").load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
-      --ls.loader.from_lua.load { paths = "/home/dave/.config/nvim/lua/user/snippets" }
-      vim.api.nvim_create_autocmd("BufWritePost", {
-        desc = "Sync packer after modifying plugins.lua",
-        group = "packer_conf",
-        pattern = "plugins/init.lua",
-        command = "source <afile> | PackerSync",
-      })
-    end
+    -- Set up custom filetypes
+    vim.filetype.add {
+      extension = {
+        plaintex = "tex",
+      },
+      --   filename = {
+      --     ["Foofile"] = "fooscript",
+      --   },
+      --   pattern = {
+      --     ["~/%.config/foo/.*"] = "fooscript",
+      --   },
+    }
+    local ls = require 'luasnip'
+    local config = ls.config
+    config.enable_autosnippets = true
+    ls.config.setup(config)
+    --ls.config.setup({ enable_autosnippets = true })
+    ls.add_snippets("all", require 'user.snippets.all')
+    ls.add_snippets("tex", require 'user.snippets.tex')
+    ls.add_snippets("python", require 'user.snippets.python')
+    --require("luasnip.loaders.from_lua").lazy_load({
+    --  paths = { "~/.config/nvim/lua/user/snippets_lua" },
+    --  override_priority = true,
+    --})
+    --require("luasnip.loaders.from_vscode").load({
+    --  paths = { "./lua/user/snippets_vs" },
+    --  override_priority = true,
+    --})
+    --require 'luasnip.loaders.from_snipmate'.lazy_load({
+    --  paths = { "./lua/user/snippets_mate" },
+    --  override_priority = true,
+    --})
   end,
 }
+
+return config

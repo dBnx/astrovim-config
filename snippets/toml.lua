@@ -1,3 +1,0 @@
-return {
-  parse("log", [===[abc]===]),
-}, {}

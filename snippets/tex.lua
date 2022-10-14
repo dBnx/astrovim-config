@@ -1,22 +1,26 @@
+local s = require("luasnip.nodes.snippet").S
+local i = require("luasnip.nodes.insertNode").I
+local t = require("luasnip.nodes.textNode").T
+
 return {
   -- =================    TEXTUAL   ===========================
-  parse("para", "\\paragraph{}"),
+  s("para", t("\\paragraph{}")),
   -- ================= MATHEMATICAL ===========================
-  parse(
+  s(
     "ali",
-    [===[
-\begin{align}
-\end{align}
-]===]
+    t({ "", "\\begin{align}" }),
+    i(1),
+    t({ "", "\\end{align}" }),
+    i(0)
   ),
-  parse(
+  s(
     "splitali",
-    [===[
-\end{align}
-\begin{align}
-]===]
-  ),
+    t({
+      "\\end{align}",
+      "\\begin{align}"
+    }
+    )),
   -- =================     META     ===========================
-  parse("texroot", "% !TeX root="),
+  s("texroot", t("% !TeX root=")),
 },
-  {}
+    {}

@@ -17,4 +17,20 @@ local l = extras.l
 local rep = extras.rep
 local postfix = require("luasnip.extras.postfix").postfix
 
-return {}, {}
+-- Snippet arguments:
+-- s({trig="trig",
+--   name="IDK if used",
+--   dscr="Description",
+--   wordTrig= talse, -- if true, the snippet is only expanded if the word ([%w_]+) before the cursor matches the trigger entirely. True by default.
+--   regTrig= false, -- whether the trigger should be interpreted as a lua pattern. False by default.
+--   -- docstring,
+--   -- docTrig,
+--   hidden: false,
+--   priority: 1000,
+--   snippetType
+-- })
+return {
+  s("trig", {
+    t ">", i(1), t "< text >", i(2), t "< text again >", i(3)
+  })
+}, {}

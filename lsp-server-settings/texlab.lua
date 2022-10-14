@@ -51,28 +51,13 @@ end
 return {
   cmd = { "texlab" },
   filetypes = { "tex", "bib" },
-  root_dir = function(fname) return util.root_pattern ".latexmkrc"(fname) or util.find_git_ancestor(fname) end,
-  single_file_support = true,
+  root_dir = function(fname) return util.root_pattern ".latexmkrc" (fname) or util.find_git_ancestor(fname) end,
+  single_file_support = false,
   -- LSP Settings =================================================================================
   settings = {
     texlab = {
       rootDirectory = nil,
       -- Build -----------------------------------------------------------------
-      --build = {
-      --  executable = "tectonic",
-      --  args = {
-      --    "-X",
-      --    "compile",
-      --    "%f",
-      --    "--synctex",
-      --    "--keep-logs",
-      --    "--keep-intermediates",
-      --    "--outdir=build",
-      --  },
-      --  onSave = true,
-      --  forwardSearchAfter = true,
-      --},
-
       build = {
         executable = "latexmk",
         args = {
@@ -102,21 +87,14 @@ return {
       latexFormatter = "latexindent",
       latexindent = {
         ["local"] = nil, -- local is a reserved keyword
-        modifyLineBreaks = false,
+        modifyLineBreaks = true,
       },
       bibtexFormatter = "texlab",
-      formatterLineLength = 80,
+      formatterLineLength = 100,
     },
   },
   -- Commands =====================================================================================
   commands = {
-    TexlabClean = {
-      function()
-        -- TODO: Clean aux files
-        buf_build(0)
-      end,
-      description = "Build the current buffer",
-    },
     TexlabBuild = {
       function()
         -- TODO: Create build dir ?
@@ -137,6 +115,6 @@ https://github.com/latex-lsp/texlab
 A completion engine built from scratch for (La)TeX.
 
 See https://github.com/latex-lsp/texlab/blob/master/docs/options.md for configuration options.
-]],
+]]   ,
   },
 }
