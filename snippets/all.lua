@@ -1,7 +1,10 @@
 local s = require("luasnip.nodes.snippet").S
 local t = require("luasnip.nodes.textNode").T
 
-local private = require('user.snippets.private_info')
+local private_ok, private = pcall(require, 'user.snippets.private_info')
+if not private_ok then
+  private = require('user.snippets.private_info_example')
+end
 
 return {
   s("fthint", t("# vim: set ft=sh :")),

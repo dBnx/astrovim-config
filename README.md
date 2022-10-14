@@ -15,6 +15,7 @@ git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 - Get this config:
 
 ```sh
+git clone https://github.com/dBnx/astrovim-config ~/.config/nvim/lua/user
 ```
 
 - Install all plugins and then quit `:q`
