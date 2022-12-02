@@ -16,7 +16,7 @@ local config = {
     pin_plugins = nil, -- nil, true, false (nil will pin plugins on stable only)
     skip_prompts = false, -- skip prompts about breaking changes
     show_changelog = true, -- show the changelog after performing an update
-    auto_reload = true, -- automatically reload and sync packer after a successful update
+    auto_reload = false, -- automatically reload and sync packer after a successful update
     auto_quit = false, -- automatically quit the current session after a successful update
     -- remotes = { -- easily add new remotes to track
     --   ["remote_name"] = "https://remote_url.come/repo.git", -- full remote url
@@ -43,8 +43,8 @@ local config = {
     opt = {
       relativenumber = true,
       number = true,
-      spell = true,
-      -- spelllang = "en_us,de_at",
+      spell = false,
+      spelllang = "en,de,fr",
       signcolumn = "yes", -- default: "auto"
       wrap = false,
       smartindent = true,
@@ -56,6 +56,7 @@ local config = {
       autopairs_enabled = true, -- enable autopairs at start
       diagnostics_enabled = true, -- enable diagnostics at start
       status_diagnostics_enabled = true, -- enable diagnostics in statusline
+      tex_comment_nospell = true,
     },
   },
   -- If you need more control, you can use the function()...end notation
@@ -139,6 +140,8 @@ local config = {
   -- augroups/autocommands and custom filetypes also this just pure lua so
   -- anything that doesn't fit in the normal config locations above can go here
   polish = function()
+    vim.g.vimtex_view_method = 'zathura'
+    vim.g.vimtex_compiler_method = 'tectonic'
     vim.cmd [[
     command! LuaSnipEdit :lua require("luasnip.loaders").edit_snippet_files()
     ]]

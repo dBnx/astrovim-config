@@ -2,14 +2,20 @@ return {
   skip_setup = { "clangd", "rust_analyzer" },
   -- enable servers that you already have installed without mason
   servers = {
-    "verible"
     -- "pyright"
   },
   formatting = {
-    format_on_save = true, -- enable or disable auto formatting on save
-    disabled = { -- disable formatting capabilities for the listed clients
+    -- control auto formatting on save
+    format_on_save = {
+      enabled = true, -- enable or disable format on save globally
+      ignore_filetypes = { -- disable format on save for specified filetypes
+        -- "python",
+      },
+    },
+    disabled = { -- disable formatting capabilities for the listed language servers
       -- "sumneko_lua",
     },
+    timeout_ms = 1000, -- default format timeout
     -- filter = function(client) -- fully override the default formatting function
     --   return true
     -- end

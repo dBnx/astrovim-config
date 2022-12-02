@@ -17,4 +17,6 @@ local l = extras.l
 local rep = extras.rep
 local postfix = require("luasnip.extras.postfix").postfix
 
-return {}, {}
+return {
+  s("pd", { t("print(f\"{"), i(1), t("}\")"), i(0) }),
+}, {}

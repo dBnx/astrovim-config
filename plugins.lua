@@ -76,6 +76,7 @@ return {
         -- supported backends and further explanation is provided in the documentation,
         -- see ":help vimtex-compiler".
         vim.g.vimtex_compiler_method = 'tectonic'
+        require("vimtex").setup {}
       end
     },
 
