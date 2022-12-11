@@ -143,7 +143,7 @@ local config = {
     vim.g.vimtex_view_method = 'zathura'
     vim.g.vimtex_compiler_method = 'tectonic'
     vim.cmd [[
-    command! LuaSnipEdit :lua require("luasnip.loaders").edit_snippet_files()
+      command! LuaSnipEdit :lua require("luasnip.loaders").edit_snippet_files()
     ]]
     -- Set up custom filetypes
     vim.filetype.add {
@@ -177,6 +177,12 @@ local config = {
     --  paths = { "./lua/user/snippets_mate" },
     --  override_priority = true,
     --})
+    vim.cmd [[
+     noremap <silent> k gk
+     noremap <silent> j gj
+     noremap <silent> 0 g0
+     noremap <silent> $ g$
+    ]]
   end,
 }
 
